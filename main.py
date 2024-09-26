@@ -1,14 +1,24 @@
 # main.py
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import models, schemas
 from database import engine, get_db
 from datetime import date, datetime
 
+
 # Crea le tabelle nel database (se non esistono)
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Puoi specificare i domini che devono avere accesso
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Rotta per creare una nuova registrazione
 @app.post("/memories/", response_model=schemas.Memory)
