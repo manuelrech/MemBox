@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 import models, schemas
 from database import engine, get_db
-from datetime import datetime
+from datetime import date, datetime
 
 # Crea le tabelle nel database (se non esistono)
 models.Base.metadata.create_all(bind=engine)
@@ -20,7 +20,7 @@ def create_memory(memory: schemas.MemoryCreate, db: Session = Depends(get_db)):
         categories=memory.categories,
         latitude=memory.latitude,
         longitude=memory.longitude,
-        date=datetime.utcnow()  # Imposta la data come datetime corrente
+        date=datetime.now()  # Imposta la data come datetime corrente
     )
     db.add(db_memory)
     db.commit()
