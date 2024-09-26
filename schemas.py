@@ -1,6 +1,7 @@
 # schemas.py
 from pydantic import BaseModel
 from typing import Optional
+from datetime import datetime
 
 class MemoryCreate(BaseModel):
     transcription: str
@@ -15,7 +16,7 @@ class Memory(BaseModel):
     transcription: str
     paraphrase: str
     audio: bytes
-    date: str
+    date: datetime
     categories: Optional[str]
     latitude: Optional[float]
     longitude: Optional[float]
