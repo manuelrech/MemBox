@@ -9,6 +9,7 @@ from openai import OpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 import requests
+from io import BytesIO
 
 # Load environment variables
 load_dotenv()
@@ -35,14 +36,21 @@ app.add_middleware(
 )
 
 def transcribe_audio(audio_url):
+    # Download the audio file from the URL
     response = requests.get(audio_url)
-    if response.status_code != 200:
-        raise Exception(f"Failed to fetch audio: {response.status_code}")
     
+    # Check if the request was successful
+    if response.status_code != 200:
+        raise Exception("Failed to download audio file")
+    
+    # Use the content of the response as the audio file
+    audio_file = BytesIO(response.content)
+    audio_file.name = "audio.mp3"  # Set a name with the correct extension
+
     transcript = client.audio.transcriptions.create(
-            model=transcription_model, 
-            file=response.content
-        )
+        model=transcription_model, 
+        file=audio_file
+    )
     return transcript.text
 
 
