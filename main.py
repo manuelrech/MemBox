@@ -8,6 +8,7 @@ from schemas import Memory, MemoryInput, MemoryParaphrased
 from openai import OpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
+import requests
 
 # Load environment variables
 load_dotenv()
@@ -33,11 +34,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-def transcribe_audio(file_path):
-    with open(file_path, "rb") as audio_file:
-        transcript = client.audio.transcriptions.create(
+def transcribe_audio(audio_url):
+    response = requests.get(audio_url)
+    if response.status_code != 200:
+        raise Exception(f"Failed to fetch audio: {response.status_code}")
+    
+    transcript = client.audio.transcriptions.create(
             model=transcription_model, 
-            file=audio_file
+            file=response.content
         )
     return transcript.text
 
