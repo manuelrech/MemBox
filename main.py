@@ -54,7 +54,7 @@ def transcribe_audio(audio_url):
     return transcript.text
 
 
-def create_memory(transcription: str):
+def paraphrase_memory(transcription: str):
     llm = ChatOpenAI(model=chat_model, temperature=0)
     prompt = ChatPromptTemplate.from_messages([
         ("system", "Sei un assistente utile che aggiunge la punteggiatura corretta al testo, categorizza il testo in categorie predefinite e genera un titolo."),
@@ -68,7 +68,7 @@ def create_memory(transcription: str):
 def create_memory(memory_input: MemoryInput):
     # Transcribe audio
     transcription = transcribe_audio(memory_input.audio_url)
-    memory_paraphrased = create_memory(transcription)
+    memory_paraphrased = paraphrase_memory(transcription)
     
     # Create Memory object
     memory = Memory(
