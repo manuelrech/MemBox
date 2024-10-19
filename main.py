@@ -23,7 +23,7 @@ client = OpenAI()
 transcription_model = "whisper-1"
 chat_model = "gpt-4o-mini"
 
-predefined_categories = ["Work", "Personal", "Family", "Travel", "Health", "Finance", "Education", "Entertainment", "Technology", "Other"]
+categorie_predefinite = ["Lavoro", "Personale", "Famiglia", "Viaggio", "Salute", "Finanza", "Istruzione", "Intrattenimento", "Tecnologia", "Altro"]
 
 app = FastAPI()
 
@@ -58,10 +58,10 @@ def paraphrase_memory(transcription: str):
     llm = ChatOpenAI(model=chat_model, temperature=0)
     prompt = ChatPromptTemplate.from_messages([
         ("system", "Sei un assistente utile che aggiunge la punteggiatura corretta al testo, categorizza il testo in categorie predefinite e genera un titolo."),
-        ("user", "Testo:{input}")
+        ("user", "Queste sono le categorie predefinite: {categories}. \nTesto:{input}")
     ])
     chain = prompt | llm.with_structured_output(MemoryParaphrased)
-    return chain.invoke({"input": transcription})
+    return chain.invoke({"input": transcription, "categories": categorie_predefinite})
 
 
 @app.post("/memories/", response_model=Memory)
